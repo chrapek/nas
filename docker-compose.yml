@@ -841,6 +841,8 @@ services:
       - seccomp:unconfined
       - apparmor:unconfined
     command: mariadbd --innodb-buffer-pool-size=512M --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120
+    ports: 
+     - ${MARIADB_PORT:?err}:3306
     volumes:
       - ${FOLDER_FOR_CONFIGS:?err}/photoprism/mariadb:/var/lib/mysql
     environment:
