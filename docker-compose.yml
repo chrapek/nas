@@ -826,7 +826,7 @@ services:
      - "/dev/dri:/dev/dri"                         # Intel QSV
     working_dir: "/photoprism" # do not change or remove
     volumes:
-      - ${FOLDER_FOR_CONFIGS:?err}/photoprism/storage:/photoprism/storage/"
+      - ${FOLDER_FOR_CONFIGS:?err}/photoprism/storage:/photoprism/storage
       - ${FOLDER_FOR_MEDIA:?err}/media/photos:/photoprism/originals
     networks:
       - media-network
