@@ -1,0 +1,68 @@
+services:
+  ###########################################################################
+  ###########################################################################
+  ##
+  ##  Docker Compose File: Flaresolverr (Flaresolverr)
+  ##  Function: Cloudflare Proxy Server
+  ##
+  ##  Documentation: https://github.com/FlareSolverr/FlareSolverr
+  ##
+  ###########################################################################
+  ###########################################################################
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    restart: unless-stopped
+    ports:
+      - "${FLARESOLVERR_PORT:?err}:8191"
+    environment:
+      - LOG_LEVEL=info
+      - LOG_HTML=false
+      - CAPTCHA_SOLVER=none
+      - TZ=${TIMEZONE:?err}
+    networks:
+      - media-network
+
+  ###########################################################################
+  ###########################################################################
+  ##
+  ##    Docker Compose File: SWAG (LinuxServer.io)
+  ##    Function: Reverse proxy with Certbot, for Let's Encrypt / ZeroSSL
+  ##
+  ##    Documentation: https://docs.linuxserver.io/general/swag
+  ##    https://www.linuxserver.io/blog/zero-trust-hosting-and-reverse-proxy-via-cloudflare-swag-and-authelia
+  ##
+  ###########################################################################
+  ###########################################################################
+  swag:
+    image: lscr.io/linuxserver/swag:latest
+    container_name: swag
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+    volumes:
+      - ${FOLDER_FOR_CONFIGS:?err}/swag:/config
+    ports:
+      - ${REVERSE_PROXY_PORT_HTTP:?err}:80
+      - ${REVERSE_PROXY_PORT_HTTPS:?err}:443
+    environment:
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+      - UMASK=${UMASK:?err}
+      - TZ=${TIMEZONE:?err}
+      - URL=${URL:?err}
+      - SUBDOMAINS=${SUBDOMAINS}
+      - VALIDATION=${VALIDATION:?err}
+      - CERTPROVIDER=${CERTPROVIDER}
+      - DNSPLUGIN=${DNSPLUGIN}
+      - PROPAGATION=${PROPAGATION}
+      - DUCKDNSTOKEN=${DUCKDNSTOKEN}
+      - EMAIL=${EMAIL}
+      - ONLY_SUBDOMAINS=${ONLY_SUBDOMAINS}
+      - EXTRA_DOMAINS=${EXTRA_DOMAINS}
+      - STAGING=${STAGING}
+
+    # NOTE: SWAG MUST NOT connect to the Gluetun VPN container
+
+    networks:
+      - media-network
