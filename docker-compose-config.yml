@@ -15,4 +15,5 @@ networks:
 ## Dummy image to be able to run this docker
 services:
   config:
+    container_name: config
     image: hello-world
