@@ -104,6 +104,7 @@ services:
   adguardhome:
     image: adguard/adguardhome
     container_name: adguardhome
+    network_mode: host
     ports:
       - "53:53"
       - ${WEBUI_PORT_ADGUARDHOME:?err}:3000
