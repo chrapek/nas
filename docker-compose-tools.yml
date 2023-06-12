@@ -100,3 +100,22 @@ services:
     restart: always
     networks:
       - media-network
+
+  adguardhome:
+    image: adguard/adguardhome
+    container_name: adguardhome
+    ports:
+      - ${WEBUI_PORT_ADGUARDHOME:?err}:3000
+    volumes:
+      - ${FOLDER_FOR_CONFIGS:?err}/adguard/work:/opt/adguardhome/work
+      - ${FOLDER_FOR_CONFIGS:?err}/adguard/config:/opt/adguardhome/conf
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+      - UMASK=${UMASK:?err}
+      - TZ=${TIMEZONE:?err}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.adguardhome.rule=Host(`${HOST_ADGUARDHOME?:err}.${DOMAIN_LOCAL?:err}`)
+      - traefik.http.services.adguardhome.loadbalancer.server.port=${WEBUI_PORT_ADGUARDHOME:?err}
