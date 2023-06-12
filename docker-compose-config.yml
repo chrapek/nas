@@ -11,3 +11,8 @@ networks:
       config:
         - subnet: ${DOCKER_SUBNET:?err}
           gateway: ${DOCKER_GATEWAY:?err}
+
+## Dummy image to be able to run this docker
+services:
+  config:
+    image: hello-world
