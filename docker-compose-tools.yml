@@ -108,8 +108,6 @@ services:
       - "53:53/tcp"
       - "53:53/udp"
       - "67:67/udp"
-      - "68:68/tcp"
-      - "68:68/udp"
       - "853:853/tcp"
       - ${WEBUI_PORT_ADGUARDHOME:?err}:3000
     volumes:
