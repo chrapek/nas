@@ -105,6 +105,7 @@ services:
     image: adguard/adguardhome
     container_name: adguardhome
     ports:
+      - "53:53"
       - ${WEBUI_PORT_ADGUARDHOME:?err}:3000
     volumes:
       - ${FOLDER_FOR_CONFIGS:?err}/adguard/work:/opt/adguardhome/work
