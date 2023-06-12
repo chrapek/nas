@@ -1,0 +1,13 @@
+version: "3.7"
+
+networks:
+  proxy:
+    external: true
+  media-network:
+    name: media-network
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${DOCKER_SUBNET:?err}
+          gateway: ${DOCKER_GATEWAY:?err}
