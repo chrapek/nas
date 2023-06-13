@@ -129,6 +129,7 @@ services:
 
   cloudflare-ddns:
     image: oznu/cloudflare-ddns:latest
+    container_name: cloudflare-ddns
     restart: always
     environment:
       - API_KEY=${CLOUDFLARE_API_TOKEN?:err}
