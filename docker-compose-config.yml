@@ -15,36 +15,17 @@ networks:
 ## Dummy image to be able to run this docker
 services:
   traefik:
-    image: traefik:latest
+    image: traefik:v2.5
     container_name: traefik
-    restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    networks:
-      - proxy
     ports:
       - 80:80
       - 443:443
-    environment:
-      - CF_API_EMAIL=${COULDFLARE_EMAIL:?err}
-      - CF_DNS_API_TOKEN=${COULDFLARE_EMAIL_DNS_API_TOKEN:?err}
+      - ${WEBUI_PORT_TRAEFIK?:err}:8080
     volumes:
       - /etc/localtime:/etc/localtime:ro
+      - ${FOLDER_FOR_CONFIGS:?err}/traefik/traefik.yml:/etc/traefik.yml:ro
+      - ${FOLDER_FOR_CONFIGS:?err}/traefik/ssl-certs:/ssl-certs
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ${FOLDER_FOR_CONFIGS:?err}/traefik/data/traefik.yml:/traefik.yml:ro
-      - ${FOLDER_FOR_CONFIGS:?err}/traefik/data/acme.json:/acme.json
-      - ${FOLDER_FOR_CONFIGS:?err}/traefik/data/config.yml:/config.yml:ro
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.traefik.entrypoints=http"
-      - "traefik.http.routers.traefik.rule=Host(`${HOST_PROXY?:err}.${DOMAIN:?err}`)"
-      - "traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https"
-      - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
-      - "traefik.http.routers.traefik.middlewares=traefik-https-redirect"
-      - "traefik.http.routers.traefik-secure.entrypoints=https"
-      - "traefik.http.routers.traefik-secure.rule=Host(`${HOST_PROXY?:err}.${DOMAIN:?err}`)"
-      - "traefik.http.routers.traefik-secure.tls=true"
-      - "traefik.http.routers.traefik-secure.tls.certresolver=cloudflare"
-      - "traefik.http.routers.traefik-secure.tls.domains[0].main=${DOMAIN:?err}"
-      - "traefik.http.routers.traefik-secure.tls.domains[0].sans=*.${DOMAIN:?err}"
-      - "traefik.http.routers.traefik-secure.service=api@internal"
+    restart: unless-stopped
+    networks:
+      - proxy

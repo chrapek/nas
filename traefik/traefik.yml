@@ -1,32 +1,77 @@
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false  # true by default
+
+  # (Optional) Log information
+  # ---
+  # log:
+  #  level: ERROR  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  #   format: common  # common, json, logfmt
+  #   filePath: /var/log/traefik/traefik.log
+
+  # (Optional) Accesslog
+  # ---
+  # accesslog:
+  # format: common  # common, json, logfmt
+  # filePath: /var/log/traefik/access.log
+
+  # (Optional) Enable API and Dashboard
+  # ---
 api:
-  dashboard: true
-  debug: true
+  dashboard: true  # true by default
+  insecure: true  # Don't do this in production!
+
+# Entry Points configuration
+# ---
 entryPoints:
-  http:
-    address: ":80"
-    http:
-      redirections:
-        entryPoint:
-          to: https
-          scheme: https
-  https:
-    address: ":443"
-serversTransport:
-  insecureSkipVerify: true
+  web:
+    address: :80
+    # (Optional) Redirect to HTTPS
+    # ---
+    # http:
+    #   redirections:
+    #     entryPoint:
+    #       to: websecure
+    #       scheme: https
+
+  websecure:
+    address: :443
+
+# Configure your CertificateResolver here...
+# ---
+certificatesResolvers:
+ staging:
+   acme:
+     email: your-email@gmail.com
+     storage: /etc/traefik/certs/acme.json
+     caServer: "https://acme-staging-v02.api.letsencrypt.org/directory"
+     httpChallenge:
+       entryPoint: web
+
+ production:
+   acme:
+     email: your-email@gmail.com
+     storage: /etc/traefik/certs/acme.json
+     caServer: "https://acme-v02.api.letsencrypt.org/directory"
+     httpChallenge:
+       entryPoint: web
+
+# (Optional) Overwrite Default Certificates
+# tls:
+#   stores:
+#     default:
+#       defaultCertificate:
+#         certFile: /etc/traefik/certs/cert.pem
+#         keyFile: /etc/traefik/certs/cert-key.pem
+# (Optional) Disable TLS version 1.0 and 1.1
+#   options:
+#     default:
+#       minVersion: VersionTLS12
+
 providers:
   docker:
-    endpoint: "unix:///var/run/docker.sock"
-    exposedByDefault: false
+    exposedByDefault: false  # Default is true
   file:
-    filename: /config.yml
-certificatesResolvers:
-  cloudflare:
-    acme:
-      email: you@example.com # CHANGE
-      storage: acme.json
-      dnsChallenge:
-        provider: cloudflare
-        #disablePropagationCheck: true # uncomment this if you have issues pulling certificates through cloudflare, By setting this flag to true disables the need to wait for the propagation of the TXT record to all authoritative name servers.
-        resolvers:
-          - "1.1.1.1:53"
-          - "1.0.0.1:53"
+    # watch for dynamic configuration changes
+    directory: /etc/traefik
+    watch: true
