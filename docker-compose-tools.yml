@@ -126,3 +126,19 @@ services:
       - traefik.enable=true
       - traefik.http.routers.adguardhome.rule=Host(`${HOST_ADGUARDHOME?:err}.${DOMAIN?:err}`)
       - traefik.http.services.adguardhome.loadbalancer.server.port=${WEBUI_PORT_ADGUARDHOME:?err}
+
+  cloudflare-ddns:
+    image: oznu/cloudflare-ddns:latest
+    restart: always
+    environment:
+      - API_KEY=${CLOUDFLARE_API_TOKEN?:err}
+      - ZONE=devted.it
+      - PROXIED=true
+      - PUID=${PUID:?err}
+      - PGID=${PGID:?err}
+
+    # NOTE: cloudflare-ddns MUST NOT connect to the Gluetun VPN container
+
+    networks:
+      - media-network
+      - proxy
