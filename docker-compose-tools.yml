@@ -124,5 +124,5 @@ services:
       - TZ=${TIMEZONE:?err}
     labels:
       - traefik.enable=true
-      - traefik.http.routers.adguardhome.rule=Host(`${HOST_ADGUARDHOME?:err}.${DOMAIN_LOCAL?:err}`)
+      - traefik.http.routers.adguardhome.rule=Host(`${HOST_ADGUARDHOME?:err}.${DOMAIN?:err}`)
       - traefik.http.services.adguardhome.loadbalancer.server.port=${WEBUI_PORT_ADGUARDHOME:?err}
