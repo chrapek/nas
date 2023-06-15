@@ -24,7 +24,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${FOLDER_FOR_CONFIGS:?err}/traefik/traefik.yml:/etc/traefik.yml:ro
-      - ${FOLDER_FOR_CONFIGS:?err}/traefik/ssl-certs:/ssl-certs
+      - ${FOLDER_FOR_CONFIGS:?err}/traefik/ssl-certs:/etc/traefik/certs
       - /var/run/docker.sock:/var/run/docker.sock:ro
     restart: unless-stopped
     networks:
