@@ -24,3 +24,8 @@ ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
 Stop DNSStubListener:
 
 systemctl reload-or-restart systemd-resolved
+
+
+traefik:
+
+copy traefik.yml to ${FOLDER_FOR_CONFIGS:?err}/traefik/traefik.yml
