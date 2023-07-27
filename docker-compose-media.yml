@@ -189,13 +189,11 @@ services:
       - WEBUI_PORT=${WEBUI_PORT_QBITTORRENT:?err}
       - DOCKER_MODS=ghcr.io/gilbn/theme.park:qbittorrent
       - TP_THEME=${TP_THEME:?err}
-    networks:
-      - media-network
 
   ## Do Not Change Network for qBittorrent
   ## qBittorrent MUST always use a VPN / Secure Internet connection
 
-    #network_mode: "service:gluetun"
+    network_mode: "service:gluetun"
 
   ###########################################################################
   ###########################################################################
