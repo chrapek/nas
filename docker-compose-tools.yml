@@ -11,45 +11,45 @@ services:
   ##
   ###########################################################################
   ###########################################################################
-  gluetun:
-    image: qmcgaw/gluetun:latest
-    container_name: gluetun
-    restart: always
-    cap_add:
-      - NET_ADMIN
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    ports:
-      - "8888:8888/tcp"                         # Gluetun Local Network HTTP proxy
-      - "8388:8388/tcp"                         # Gluetun Local Network Shadowsocks
-      - "8388:8388/udp"                         # Gluetun Local Network Shadowsocks
-      - "${WEBUI_PORT_QBITTORRENT:?err}:${WEBUI_PORT_QBITTORRENT:?err}"   # WebUI Portal: qBittorrent
-      - "${QBIT_PORT_TCP:?err}:${QBIT_PORT_TCP:?err}/tcp"        # Transmission Torrent Port TCP
-      - "${QBIT_PORT_UDP:?err}:${QBIT_PORT_UDP:?err}/udp"        # Transmission Torrent Port UDP
+  # gluetun:
+  #   image: qmcgaw/gluetun:latest
+  #   container_name: gluetun
+  #   restart: always
+  #   cap_add:
+  #     - NET_ADMIN
+  #   devices:
+  #     - /dev/net/tun:/dev/net/tun
+  #   ports:
+  #     - "8888:8888/tcp"                         # Gluetun Local Network HTTP proxy
+  #     - "8388:8388/tcp"                         # Gluetun Local Network Shadowsocks
+  #     - "8388:8388/udp"                         # Gluetun Local Network Shadowsocks
+  #     - "${WEBUI_PORT_QBITTORRENT:?err}:${WEBUI_PORT_QBITTORRENT:?err}"   # WebUI Portal: qBittorrent
+  #     - "${QBIT_PORT_TCP:?err}:${QBIT_PORT_TCP:?err}/tcp"        # Transmission Torrent Port TCP
+  #     - "${QBIT_PORT_UDP:?err}:${QBIT_PORT_UDP:?err}/udp"        # Transmission Torrent Port UDP
 
-    volumes:
-      - ${FOLDER_FOR_CONFIGS:?err}/gluetun:/gluetun
-    environment:
-      - PUID=${PUID:?err}
-      - PGID=${PGID:?err}
-      - TZ=${TIMEZONE:?err}
-      - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER:?err}
-      - FIREWALL_OUTBOUND_SUBNETS=${LOCAL_SUBNET:?err}
-      - OPENVPN_CUSTOM_CONFIG=${OPENVPN_CUSTOM_CONFIG}
-      - VPN_TYPE=${VPN_TYPE}
-      - VPN_ENDPOINT_IP=${VPN_ENDPOINT_IP}
-      - VPN_ENDPOINT_PORT=${VPN_ENDPOINT_PORT}
-      - WIREGUARD_PUBLIC_KEY=${WIREGUARD_PUBLIC_KEY}
-      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
-      - WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
-      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
-      - HTTPPROXY=on
-      - SHADOWSOCKS=on
+  #   volumes:
+  #     - ${FOLDER_FOR_CONFIGS:?err}/gluetun:/gluetun
+  #   environment:
+  #     - PUID=${PUID:?err}
+  #     - PGID=${PGID:?err}
+  #     - TZ=${TIMEZONE:?err}
+  #     - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER:?err}
+  #     - FIREWALL_OUTBOUND_SUBNETS=${LOCAL_SUBNET:?err}
+  #     - OPENVPN_CUSTOM_CONFIG=${OPENVPN_CUSTOM_CONFIG}
+  #     - VPN_TYPE=${VPN_TYPE}
+  #     - VPN_ENDPOINT_IP=${VPN_ENDPOINT_IP}
+  #     - VPN_ENDPOINT_PORT=${VPN_ENDPOINT_PORT}
+  #     - WIREGUARD_PUBLIC_KEY=${WIREGUARD_PUBLIC_KEY}
+  #     - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+  #     - WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
+  #     - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
+  #     - HTTPPROXY=on
+  #     - SHADOWSOCKS=on
 
-    # NOTE: Gluetun VPN container MUST ONLY connect to the media-network
+  #   # NOTE: Gluetun VPN container MUST ONLY connect to the media-network
 
-    networks:
-      - media-network
+  #   networks:
+  #     - media-network
 
   ###########################################################################
   ###########################################################################
@@ -101,45 +101,5 @@ services:
     networks:
       - media-network
 
-  adguardhome:
-    image: adguard/adguardhome
-    container_name: adguardhome
-    ports:
-      - "53:53/tcp"
-      - "53:53/udp"
-      - "67:67/udp"
-      - "853:853/tcp"
-      - ${WEBUI_PORT_ADGUARDHOME:?err}:3000
-    volumes:
-      - ${FOLDER_FOR_CONFIGS:?err}/adguard/work:/opt/adguardhome/work
-      - ${FOLDER_FOR_CONFIGS:?err}/adguard/config:/opt/adguardhome/conf
-    restart: unless-stopped
-    networks:
-      - proxy
-      - media-network
-    environment:
-      - PUID=${PUID:?err}
-      - PGID=${PGID:?err}
-      - UMASK=${UMASK:?err}
-      - TZ=${TIMEZONE:?err}
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.adguardhome.rule=Host(`${HOST_ADGUARDHOME?:err}.${DOMAIN?:err}`)
-      - traefik.http.services.adguardhome.loadbalancer.server.port=${WEBUI_PORT_ADGUARDHOME:?err}
-
-  cloudflare-ddns:
-    image: oznu/cloudflare-ddns:latest
-    container_name: cloudflare-ddns
-    restart: always
-    environment:
-      - API_KEY=${CLOUDFLARE_API_TOKEN?:err}
-      - ZONE=devted.it
-      - PROXIED=true
-      - PUID=${PUID:?err}
-      - PGID=${PGID:?err}
-
-    # NOTE: cloudflare-ddns MUST NOT connect to the Gluetun VPN container
-
     networks:
       - media-network
-      - proxy
