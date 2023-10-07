@@ -243,5 +243,5 @@ services:
       - VERSION=docker
     volumes:
       - ${FOLDER_FOR_CONFIGS:?err}/plex:/config
-      - ${FOLDER_FOR_MEDIA:?err}/media:/data/media
+      - ${FOLDER_FOR_MEDIA:?err}:/data/media
     restart: unless-stopped
