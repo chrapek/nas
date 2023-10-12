@@ -68,6 +68,8 @@ services:
     restart: unless-stopped
     volumes:
       - ${FOLDER_FOR_CONFIGS:?err}/heimdall:/config
+    ports:
+      - ${WEBUI_PORT_HEIMDALL:?err}:80
     environment:
       - PUID=${PUID:?err}
       - PGID=${PGID:?err}
