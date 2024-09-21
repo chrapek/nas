@@ -245,3 +245,8 @@ services:
       - ${FOLDER_FOR_CONFIGS:?err}/plex:/config
       - ${FOLDER_FOR_MEDIA:?err}:/data/media
     restart: unless-stopped
+
+
+networks:
+  media-network:
+    external: true
