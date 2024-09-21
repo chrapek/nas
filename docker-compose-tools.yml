@@ -100,3 +100,7 @@ services:
     restart: always
     networks:
       - media-network
+
+networks:
+  media-network:
+    external: true
