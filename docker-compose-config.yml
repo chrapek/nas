@@ -8,3 +8,7 @@ services:
         config:
           - subnet: ${DOCKER_SUBNET:?err}
             gateway: ${DOCKER_GATEWAY:?err}
+
+networks:
+  media-network:
+    external: true
